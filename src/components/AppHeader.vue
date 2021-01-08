@@ -9,35 +9,40 @@
 			:to="item.to"
 			>{{ item.title }}</router-link
 		>
-		<button class="mx-2" @click="$emit('open-login-modal')">Login</button>
-		<button class="mx-2" @click="logout">Logout</button>
+		<button v-if="isLoggedIn" class="mx-2" @click="logout">Logout</button>
+		<button v-else class="mx-2" @click="$emit('open-login-modal')">
+			Login
+		</button>
 	</nav>
 </template>
 
 <script>
 import firebase from "../utilities/firebase";
 export default {
+	props: { isLoggedIn: { type: Boolean, required: true } },
+
 	data() {
 		return {
 			list: [
 				{ title: "Dc Heros", to: "/dc-heros" },
 				{ title: "Calendar", to: "/calendar" },
 				{ title: "Markdown", to: "/markdown" },
-				{ title: "Slider Carousel", to: "/slider" },
+				{ title: "Slider", to: "/slider-carousel" },
+				{ title: "Calculator", to: "/calculator" },
+				{ title: "Modal", to: "/reusable-modal" },
+				{ title: "Chat", to: "/chat" },
 			],
 		};
 	},
 	methods: {
 		logout() {
-			firebase
-				.auth()
-				.signout()
-				.then((res) => {
-                    console.log(res);
-                })
-				.catch((e) => {
-                    console.log(e);
-                });
+			firebase.auth().signOut();
+			// .then((res) => {
+			//     console.log(res);
+			// })
+			// .catch((e) => {
+			//     console.log(e);
+			// });
 		},
 	},
 };

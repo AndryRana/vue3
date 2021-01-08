@@ -4,6 +4,7 @@
 		<section class="flex m-auto w-10/12 h-screen">
 			<article class=" w-1/2 border">
 				<textarea
+					ref="markdownTextArea"
 					class=" w-full h-full"
 					:value="text"
 					@input="update"
@@ -19,13 +20,13 @@
 
 <script>
 import marked from "marked";
-import debounce from "../utilities/mixins/debounce"
-
+import useDebounce from "../utilities/composition/useDebounce";
 export default {
-    mixins: [debounce],
+
 	data() {
 		return {
 			text: "",
+			debounce: "",
 		};
 	},
 
@@ -37,11 +38,13 @@ export default {
 
 	methods: {
 		update(e) {
-            const task = () => (this.text = e.target.value);
-            this.debounce(task, 500)
+			const task = () => (this.text = e.target.value);
+			this.debounce(task, 500);
 		},
-
-		
+	},
+	mounted() {
+		this.debounce = useDebounce();
+		this.$refs.markdownTextArea.focus();
 	},
 };
 </script>

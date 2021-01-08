@@ -1,14 +1,17 @@
 <template>
-	<app-header @open-login-modal="isLoginOpen = true"></app-header>
-	<div class="divide-y-4 divide-black divide-opacity-25 ">
-		<div class="w-full flex ">
-			<router-view></router-view>
-		</div>
+	<app-header
+		:isLoggedIn="isLoggedIn"
+		@open-login-modal="isLoginOpen = true"
+	></app-header>
+	<div class="w-full flex ">
+		<router-view></router-view>
 	</div>
-	<login-modal
-		v-if="isLoginOpen"
-		@close-login="isLoginOpen = false"
-	></login-modal>
+	<teleport to="body">
+		<login-modal
+			v-if="isLoginOpen"
+			@close-login="isLoginOpen = false"
+		></login-modal>
+	</teleport>
 </template>
 
 <script>

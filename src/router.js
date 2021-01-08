@@ -5,6 +5,9 @@ import DcHeros from "./pages/DcHeros";
 import Calendar from "./pages/Calendar";
 import Markdown from "./pages/Markdown";
 import Slider from "./pages/Slider";
+import Calculator from "./pages/Calculator";
+import ReusableModal from "./pages/ReusableModal";
+import Chat from "./pages/Chat";
 
 const routes = [
 	{
@@ -24,8 +27,20 @@ const routes = [
 		component: Markdown,
 	},
 	{
-		path: "/slider",
+		path: "/slider-carousel",
 		component: Slider,
+	},
+	{
+		path: "/calculator",
+		component: Calculator,
+	},
+	{
+		path: "/reusable-modal",
+		component: ReusableModal,
+	},
+	{
+		path: "/chat",
+		component: Chat,
 	},
 ];
 

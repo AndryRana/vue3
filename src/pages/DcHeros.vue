@@ -1,53 +1,69 @@
 <template>
-  <div class=" m-auto">
-			<h1 class=" text-2xl text-center">Dc Heros {{ herosCount }}</h1>
-			<ul>
-				<li
-					class="flex justify-between"
-					v-for="(hero, index) in dcHeros"
-					:key="hero.name"
-				>
-					<div>
-						{{ hero.name }}
-					</div>
-					<button @click="remove(index)">x</button>
-				</li>
-			</ul>
-			<form class=" mt-10" @submit.prevent="addHero">
-				<input class=" border rounded" v-model="newHero" placeholder="Tape Hero Name here" />
-				<button class="border rounded bg-gradient-to-r from-red-700 to-pink-500 text-white  " type="submit">Add Hero</button>
-			</form>
-		</div>
+	<div class=" m-auto">
+		<h1 class=" text-2xl text-center">Dc Heros {{ herosCount }}</h1>
+		<ul>
+			<li
+				class="flex justify-between"
+				v-for="(hero, index) in dcHeros"
+				:key="hero.name"
+			>
+				<div>
+					{{ hero.name }}
+				</div>
+				<button @click="remove(index)">x</button>
+			</li>
+		</ul>
+		<form class=" mt-10" @submit.prevent="addHero">
+			<input
+				class=" border rounded"
+				v-model="newHero"
+				placeholder="Type Hero Name here"
+				ref="newHeroRef"
+			/>
+			<button
+				class="border rounded bg-gradient-to-r from-red-700 to-pink-500 text-white  "
+				type="submit"
+			>
+				Add Hero
+			</button>
+		</form>
+	</div>
 </template>
 
 <script>
+import { ref, onMounted, computed } from "vue";
 export default {
-    data(){
-        return {
-            newHero: "",
-			dcHeros: [
-				{ name: "Superman" },
-				{ name: "Flash" },
-				{ name: "Batman" },
-				{ name: "Wonder Woman" },
-			],
-        }
-    },
-    computed: {
-		herosCount() {
-			return this.dcHeros.length;
-		},
-	},
-	methods: {
-		addHero() {
-			if (this.newHero !== "") {
-				this.dcHeros.unshift({ name: this.newHero });
-				this.newHero = "";
+	setup() {
+		const newHeroRef = ref("");
+		const newHero = ref("");
+		const dcHeros = ref([
+			{ name: "Superman" },
+			{ name: "Flash" },
+			{ name: "Batman" },
+			{ name: "Wonder Woman" },
+		]);
+		// console.log(dcHeros);
+
+		onMounted(() => {
+			newHeroRef.value.focus();
+		});
+
+		const herosCount = computed({
+			get: () => dcHeros.value.length,
+		});
+
+		function remove(index) {
+			dcHeros.value = dcHeros.value.filter((hero, i) => i != index);
+		}
+
+		function addHero() {
+			if (newHero.value !== "") {
+				dcHeros.value.unshift({ name: newHero.value });
+				newHero.value = "";
 			}
-		},
-		remove(index) {
-			this.dcHeros = this.dcHeros.filter((hero, i) => i != index);
-		},
+		}
+
+		return { dcHeros, newHero, remove, addHero, newHeroRef, herosCount };
 	},
-}
+};
 </script>
