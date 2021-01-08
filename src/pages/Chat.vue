@@ -8,7 +8,11 @@
 						v-for="chat in state.chats"
 						:key="chat.message"
 						class="w-full"
-                        :class="chat.userId === state.userId ? 'text-right': 'text-left'"
+						:class="
+							chat.userId === userId
+								? 'text-right'
+								: 'text-left'
+						"
 					>
 						{{ chat.message }}
 					</div>
@@ -16,7 +20,7 @@
 				<div class="h-8 p-2">
 					<input
 						v-model="state.message"
-                        placeholder="Start Typing..."
+						placeholder="Start Typing..."
 						class="p-1 border rounded shadow"
 						@keydown.enter="addMessage"
 					/>
@@ -27,34 +31,37 @@
 </template>
 
 <script>
-import { onMounted, reactive } from "vue";
-import firebase, { chatsRef } from "../utilities/firebase";
+import { computed, onMounted, reactive } from "vue";
+import { chatsRef } from "../utilities/firebase";
+import { useStore } from "vuex";
 export default {
 	setup() {
 		const state = reactive({
 			chats: [],
 			message: "",
-            userId:null
 		});
+
+		const store = useStore();
+		const userId = computed(() => store.state.authUser.uid);
+
 		onMounted(async () => {
 			// const data = await state.collection.once("value");
 			// state.chats = data.val();
 
 			chatsRef.on("child_added", (snapshot) => {
-                state.userId = firebase.auth().currentUser.uid;
-                state.chats.push({ key: snapshot.key, ...snapshot.val()})
-                // state.chats = snapshot.val();
+				state.chats.push({ key: snapshot.key, ...snapshot.val() });
+				// state.chats = snapshot.val();
 			});
 		});
 
 		function addMessage() {
-            const newChat = chatsRef.push()
-            
-			newChat.set({userId: state.userId, message: state.message });
+			const newChat = chatsRef.push();
+
+			newChat.set({ userId: state.userId, message: state.message });
 			state.message = "";
 		}
 
-		return { state, addMessage };
+		return { state, addMessage, userId };
 	},
 };
 </script>
